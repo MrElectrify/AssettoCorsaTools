@@ -36,8 +36,8 @@
     <ClInclude Include="include\Framework\Files\File.h">
       <Filter>Header Files\Framework\Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Framework\Curve\Curve.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Framework\Curve.h">
+      <Filter>Header Files\Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="src\Framework\Files\File.cpp">
       <Filter>Source Files\Framework\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framework\Curve.cpp">
+      <Filter>Source Files\Framework</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

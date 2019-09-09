@@ -132,12 +132,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Framework\Curve\Curve.h" />
+    <ClInclude Include="include\Framework\Curve.h" />
     <ClInclude Include="include\Framework\Error.h" />
     <ClInclude Include="include\Framework\Files\File.h" />
     <ClInclude Include="include\Framework\Files\FileDecrypter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Framework\Curve.cpp" />
     <ClCompile Include="src\Framework\Error.cpp" />
     <ClCompile Include="src\Framework\Files\File.cpp" />
     <ClCompile Include="src\Framework\Files\FileDecrypter.cpp" />
