@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Framework\Curve\Curve.h" />
     <ClInclude Include="include\Framework\Error.h" />
     <ClInclude Include="include\Framework\Files\File.h" />
     <ClInclude Include="include\Framework\Files\FileDecrypter.h" />
