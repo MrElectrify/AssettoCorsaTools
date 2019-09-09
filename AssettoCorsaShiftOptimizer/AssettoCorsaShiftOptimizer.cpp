@@ -151,10 +151,26 @@ int main(int argc, char* argv[])
 	Curve curve;
 	curve.ParseLUT(power.GetContents());
 
-	for (size_t i = 1; i <= gearCount; ++i)
+	const auto redlineTorqueBase = curve.GetValue(redline);
+
+	for (size_t i = 0; i < (gearCount - 1); ++i)
 	{
 		// figure out if we should go to redline
+		const auto currRatio = gearRatios[i];
+		const auto nextRatio = gearRatios[i + 1];
 
+		const auto nextGearRPM = redline * (nextRatio / currRatio);
+		const auto nextGearTorqueBase = curve.GetValue(nextGearRPM);
+
+		const auto redlineTorque = redlineTorqueBase * currRatio;
+		const auto nextGearTorque = nextGearTorqueBase * nextRatio;
+
+		if (redlineTorque > nextGearTorque)
+		{
+			// we should go to redline, torque is greater
+			std::cout << "Go to redline for gear " << i + 1 << '\n';
+			continue;
+		}
 	}
 
 	return 0;
