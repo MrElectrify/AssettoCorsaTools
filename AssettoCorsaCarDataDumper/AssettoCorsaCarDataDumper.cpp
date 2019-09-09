@@ -20,7 +20,7 @@ std::string GetWorkingDirectory()
 	folderName = std::filesystem::current_path().string();
 
 	// make sure no slashes are in the folder name
-	auto lastSlash = folderName.find_last_of("/\\", -1, 2);
+	auto lastSlash = folderName.find_last_of("/\\", 0, 2);
 
 	if (lastSlash != std::string::npos)
 	{

@@ -80,7 +80,7 @@ File FileDecrypter::DecryptNext()
 		// decrypt the contents
 		for (size_t i = 0; i < size; ++i)
 		{
-			decContents[i] = rawContents[i] - m_key[i % m_key.size()];
+			decContents[i] = static_cast<char>(rawContents[i]) - m_key[i % m_key.size()];
 		}
 	}
 

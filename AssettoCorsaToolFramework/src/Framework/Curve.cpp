@@ -1,18 +1,41 @@
 #include <Framework/Curve.h>
 
+#include <sstream>
+
 using Framework::Curve;
 using Framework::ErrorCode;
 
-void Curve::ParseLUT(const std::string& LUTBuf)
+void Curve::ParseLUT(const std::string& LUTbuf)
 {
-	
+	// a stringstream makes this a bit cleaner
+	std::stringstream LUTss(LUTbuf);
+
+	std::string workingString;
+
+	while (true)
+	{
+		// if we reach the end, we are done
+		if (std::getline(LUTss, workingString).fail() == true)
+			break;
+
+		auto splitPos = workingString.find('|');
+
+		// weed out any empty lines and invalid lines
+		if (splitPos == std::string::npos)
+			continue;
+
+		const auto reference = atoi(workingString.substr(0, splitPos).c_str());
+		const auto value = atoi(workingString.substr(splitPos + 1).c_str());
+
+		m_values.emplace(reference, value);
+	}
 }
 
-void Curve::ParseLUT(const std::string& LUTBuf, ErrorCode& ec)
+void Curve::ParseLUT(const std::string& LUTbuf, ErrorCode& ec)
 {
 	try
 	{
-		ParseLUT(LUTBuf);
+		ParseLUT(LUTbuf);
 	}
 	catch (const ErrorCode& e)
 	{
@@ -45,7 +68,7 @@ Curve::Data_t Curve::GetValue(const Data_t ref) const
 		{
 			// bingo, use linear interpolation to find the value
 			auto frac = (ref - belowIt->first) / static_cast<float>(aboveIt->first - belowIt->first); // https://goodaids.club/i/f2oi94wa30.png
-			return (frac * (aboveIt->second - belowIt->second)) + belowIt->second;
+			return static_cast<Data_t>((frac * (aboveIt->second - belowIt->second)) + belowIt->second);
 		}
 	}
 
