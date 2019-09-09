@@ -245,9 +245,11 @@ void FileDecrypter::CalculateKey(const std::string& directory)
 		factor7 = directory[++i] + tmp;
 	}
 
+	constexpr size_t SIZE = 0x100;
+
 	// output in some strange format as in AC
-	char tmp[0x100];
-	sprintf_s(tmp, "%d-%d-%d-%d-%d-%d-%d-%d",
+	char tmp[SIZE];
+	snprintf(tmp, SIZE, "%d-%d-%d-%d-%d-%d-%d-%d",
 		uint8_t(factor0), uint8_t(factor1), uint8_t(factor2), uint8_t(factor3),
 		uint8_t(factor4), uint8_t(factor5), uint8_t(factor6), uint8_t(factor7));
 
