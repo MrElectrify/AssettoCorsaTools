@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Framework">
+      <UniqueIdentifier>{8934aa8b-dfc7-4443-81c6-d69f7f89ff6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework">
+      <UniqueIdentifier>{b76e5791-5955-46e1-99e4-e0063431e0e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Framework\Files">
+      <UniqueIdentifier>{b6c29a86-b02a-43f5-a579-e4e7c4d71c0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework\Files">
+      <UniqueIdentifier>{eeb48c98-0dba-45f5-9490-380cbe1b8db0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Framework\Error.h">
+      <Filter>Header Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Framework\Files\FileDecrypter.h">
+      <Filter>Header Files\Framework\Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Framework\Files\File.h">
+      <Filter>Header Files\Framework\Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Framework\Error.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framework\Files\FileDecrypter.cpp">
+      <Filter>Source Files\Framework\Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framework\Files\File.cpp">
+      <Filter>Source Files\Framework\Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
