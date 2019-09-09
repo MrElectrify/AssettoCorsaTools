@@ -37,7 +37,7 @@
       <Filter>Header Files\Framework\Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Framework\Curve\Curve.h">
-      <Filter>Header Files\Framework</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
