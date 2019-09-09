@@ -1,3 +1,4 @@
+#include <Framework/Curve.h>
 #include <Framework/Files/FileDecrypter.h>
 
 #include "inipp.h"
@@ -12,6 +13,7 @@
 	9/8/19 22:40
  */
 
+using Framework::Curve;
 using Framework::ErrorCode;
 using Framework::Files::File;
 using Framework::Files::FileDecrypter;
@@ -119,6 +121,14 @@ int main(int argc, char* argv[])
 
 	std::cout << "Gear count: " << gearCount << '\n';
 	std::cout << "Final drive ratio: " << finalDrive << '\n';
+
+	Curve curve;
+	curve.ParseLUT(power.GetContents());
+
+	for (Curve::Data_t rpm = curve.GetMinRef(); rpm < curve.GetMaxRef(); rpm += 50)
+	{
+		std::cout << "Torque at " << rpm << " rpm is " << curve.GetValue(rpm) << '\n';
+	}
 
 	return 0;
 }

@@ -43,6 +43,24 @@ void Curve::ParseLUT(const std::string& LUTbuf, ErrorCode& ec)
 	}
 }
 
+Curve::Data_t Curve::GetMinRef() const
+{
+	// make sure we have values
+	if (m_values.size() == 0)
+		return 0;
+
+	return m_values.cbegin()->first;
+}
+
+Curve::Data_t Curve::GetMaxRef() const
+{
+	// make sure we have values
+	if (m_values.size() == 0)
+		return 0;
+
+	return (--m_values.cend())->first;
+}
+
 Curve::Data_t Curve::GetValue(const Data_t ref) const
 {
 	Map_t::iterator::value_type below, above;
