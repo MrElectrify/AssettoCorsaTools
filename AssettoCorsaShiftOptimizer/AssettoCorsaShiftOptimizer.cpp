@@ -10,7 +10,7 @@
 
 /*
  *	Shift Optimizer
-	9/8/19 22:40
+ *	9/8/19 22:40
  */
 
 using Framework::Curve;
