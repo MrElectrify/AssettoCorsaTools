@@ -8,6 +8,7 @@
 
 #include <Framework/Error.h>
 
+#include <cstdint>
 #include <map>
 #include <string>
 
@@ -22,14 +23,22 @@ namespace Framework
 	{
 	public:
 		// no explicit constructor necessary
+		using Data_t = int32_t;
+		using Map_t = std::map<Data_t, Data_t>;
 
 		// parses the LUT file. throws ErrorCode on error
 		void ParseLUT(const std::string& LUTBuf);
 		// parses the LUT file. returns ErrorCode in ec on error
-		void ParseLUT(const std::string& LUTBuf, ErrorCode& ec) noexcept;
+		void ParseLUT(const std::string& LUTBuf, ErrorCode& ec);
+
+		// returns the interpolated value at a point. returns 0 if the ref is out of range
+		Data_t GetValue(const Data_t ref) const;
+
+		// returns the list of values
+		const Map_t& GetValues() const noexcept;
 	private:
 		// need order for interpolation, it makes it easier
-		std::map<int, int> m_values;
+		Map_t m_values;
 	};
 }
 
