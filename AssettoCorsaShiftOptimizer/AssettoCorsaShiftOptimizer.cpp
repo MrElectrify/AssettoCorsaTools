@@ -58,21 +58,46 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// get power.lut
-	File power = decrypter.DecryptFile("power.lut", ec);
-
-	if (ec != Framework::ErrorCode_SUCCESS)
-	{
-		std::cout << "Unable to find power.lut in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
-		return 1;
-	}
-
 	// get drivetrain.ini
-	File drivetrain = decrypter.DecryptFile("drivetrain.ini", ec);
+	const auto drivetrain = decrypter.DecryptFile("drivetrain.ini", ec);
 
 	if (ec != Framework::ErrorCode_SUCCESS)
 	{
 		std::cout << "Unable to find drivetrain.ini in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
+		return 1;
+	}
+
+	// get engine.ini
+	const auto engine = decrypter.DecryptFile("engine.ini", ec);
+
+	if (ec != Framework::ErrorCode_SUCCESS)
+	{
+		std::cout << "Unable to find engine.ini in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
+		return 1;
+	}
+
+	int redline = -1;
+
+	inipp::Ini<char> engineIni;
+	// put the string in a stream for the ini parser to work properly
+	std::stringstream engineContents(engine.GetContents());
+
+	engineIni.parse(engineContents);
+
+	auto engineData = engineIni.sections["ENGINE_DATA"];
+
+	if (inipp::extract(engineData["LIMITER"], redline) == false || redline < 0)
+	{
+		std::cout << "Failed to parse engine redline\n";
+		return 0;
+	}
+
+	// get power.lut
+	const auto power = decrypter.DecryptFile("power.lut", ec);
+
+	if (ec != Framework::ErrorCode_SUCCESS)
+	{
+		std::cout << "Unable to find power.lut in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
 		return 1;
 	}
 
@@ -121,13 +146,15 @@ int main(int argc, char* argv[])
 
 	std::cout << "Gear count: " << gearCount << '\n';
 	std::cout << "Final drive ratio: " << finalDrive << '\n';
+	std::cout << "Redline: " << redline << '\n';
 
 	Curve curve;
 	curve.ParseLUT(power.GetContents());
 
-	for (Curve::Data_t rpm = curve.GetMinRef(); rpm < curve.GetMaxRef(); rpm += 50)
+	for (size_t i = 1; i <= gearCount; ++i)
 	{
-		std::cout << "Torque at " << rpm << " rpm is " << curve.GetValue(rpm) << '\n';
+		// figure out if we should go to redline
+
 	}
 
 	return 0;
