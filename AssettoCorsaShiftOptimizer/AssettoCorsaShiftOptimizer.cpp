@@ -144,8 +144,6 @@ int main(int argc, char* argv[])
 	std::string dataFile = (argc >= 2) ? argv[1] : "data.acd";
 	std::string directory = (argc >= 3) ? argv[2] : GetWorkingDirectory();
 
-	std::cout << "Dir: " << directory << '\n';
-
 	ErrorCode ec;
 	FileDecrypter decrypter(dataFile, directory, ec);
 
