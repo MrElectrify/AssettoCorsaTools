@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 {
 	if (argc > 5)
 	{
-		std::cout << "Usage: " << argv[0] << " [dataFile:string:data.acd] [path:string:wd] [outPath:string:dataFileMinusExt] [fileName:string[OPT]]\n";
+		std::cout << "Usage: " << argv[0] << " [dataFile:string:data.acd] [directory:string:wd] [outDirectory:string:dataFileMinusExt] [fileName:string[OPT]]\n";
 		return 1;
 	}
 

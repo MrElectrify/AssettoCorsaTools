@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 	// make sure we don't have too many args
 	if (argc > 3)
 	{
-		std::cout << "Usage: " << argv[0] << " [dataFile:string:data.acd] [path:string:wd]\n";
+		std::cout << "Usage: " << argv[0] << " [dataFile:string:data.acd] [directory:string:wd]\n";
 		return 1;
 	}
 
