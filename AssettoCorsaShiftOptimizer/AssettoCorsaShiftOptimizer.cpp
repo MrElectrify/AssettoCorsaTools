@@ -217,7 +217,8 @@ int main(int argc, char* argv[])
 
 			if (currTorque > nextTorque)
 			{
-				std::cout << "Shift at around " << rpm << " rpm from gear " << i + 1 << " to gear " << i + 2 << '\n';
+				// rpm + 1 because that is where acceleration would be greater in a higher gear
+				std::cout << "Shift before " << rpm + 1 << " rpm from gear " << i + 1 << " to gear " << i + 2 << '\n';
 				break;
 			}
 		}
