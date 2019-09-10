@@ -6,6 +6,8 @@
  *	9/8/19 20:30
  */
 
+#include <string>
+
 namespace Framework
 {
 	enum _ErrorCode
@@ -35,13 +37,13 @@ namespace Framework
 		// get the raw error code
 		RawCode_t GetRawCode() const;
 		// get a message representing the error code
-		const char* GetMessage() const;
+		std::string GetMessage() const;
 
 		// implicit conversion to the raw error
 		operator RawCode_t() const;
 	private:
 		RawCode_t m_code;
-		char m_message[128];
+		std::string m_message;
 	};
 }
 
