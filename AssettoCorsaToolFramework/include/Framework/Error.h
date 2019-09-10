@@ -6,6 +6,8 @@
  *	9/8/19 20:30
  */
 
+#include <cstdint>
+
 namespace Framework
 {
 	enum _ErrorCode
@@ -25,7 +27,7 @@ namespace Framework
 	class ErrorCode
 	{
 	public:
-		using RawCode_t = int;
+		using RawCode_t = int32_t;
 
 		// constructs an empty ErrorCode
 		ErrorCode();
