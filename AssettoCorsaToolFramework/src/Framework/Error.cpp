@@ -24,9 +24,9 @@ extern "C"
 using Framework::_ErrorCode;
 using Framework::ErrorCode;
 
-ErrorCode::ErrorCode() : m_code(0)
+ErrorCode::ErrorCode() : m_code(ErrorCode_SUCCESS)
 {
-	strcpy(m_message, "Code not set");
+	strcpy(m_message, "The operation completed successfully");
 }
 
 ErrorCode::ErrorCode(RawCode_t code) : m_code(code)
