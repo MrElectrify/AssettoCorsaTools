@@ -9,6 +9,7 @@
 #include <Framework/Error.h>
 
 #include <cstdint>
+#include <istream>
 #include <map>
 #include <string>
 
@@ -26,10 +27,10 @@ namespace Framework
 		using Data_t = int32_t;
 		using Map_t = std::map<Data_t, Data_t>;
 
-		// parses the LUT file. throws ErrorCode on error
-		void ParseLUT(const std::string& LUTbuf);
-		// parses the LUT file. returns ErrorCode in ec on error
-		void ParseLUT(const std::string& LUTbuf, ErrorCode& ec);
+		// parses the LUT file via a stream. throws ErrorCode on error
+		void ParseLUT(std::istream& lutFile);
+		// parses the LUT file via a stream. returns ErrorCode in ec on error
+		void ParseLUT(std::istream& lutFile, ErrorCode& ec);
 
 		// returns the min reference
 		Data_t GetMinRef() const;

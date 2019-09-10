@@ -5,17 +5,14 @@
 using Framework::Curve;
 using Framework::ErrorCode;
 
-void Curve::ParseLUT(const std::string& LUTbuf)
+void Curve::ParseLUT(std::istream& lutFile)
 {
-	// a stringstream makes this a bit cleaner
-	std::stringstream LUTss(LUTbuf);
-
 	std::string workingString;
 
 	while (true)
 	{
 		// if we reach the end, we are done
-		if (std::getline(LUTss, workingString).fail() == true)
+		if (std::getline(lutFile, workingString).fail() == true)
 			break;
 
 		auto splitPos = workingString.find('|');
@@ -31,11 +28,11 @@ void Curve::ParseLUT(const std::string& LUTbuf)
 	}
 }
 
-void Curve::ParseLUT(const std::string& LUTbuf, ErrorCode& ec)
+void Curve::ParseLUT(std::istream& lutFile, ErrorCode& ec)
 {
 	try
 	{
-		ParseLUT(LUTbuf);
+		ParseLUT(lutFile);
 	}
 	catch (const ErrorCode& e)
 	{

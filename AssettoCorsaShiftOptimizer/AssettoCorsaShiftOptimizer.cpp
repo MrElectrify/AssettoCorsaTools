@@ -36,6 +36,102 @@ std::string GetWorkingDirectory()
 	return folderName;
 }
 
+// returns false on failure, with the failure in ec
+bool GetRedline(FileDecrypter& decrypter, int& redline, ErrorCode& ec)
+{
+	// find redline in engine.ini
+	const auto engine = decrypter.DecryptFile("engine.ini", ec);
+
+	// check for errors
+	if (ec != Framework::ErrorCode_SUCCESS)
+		return false;
+
+	// place the string in a stringstream to assist the ini parser
+	std::stringstream iniFile(engine.GetContents());
+
+	inipp::Ini<char> iniParser;
+	
+	// parse the ini for ENGINE_DATA->LIMITER
+	iniParser.parse(iniFile);
+
+	auto res = inipp::extract(iniParser.sections["ENGINE_DATA"]["LIMITER"], redline);
+
+	if (res == false)
+		ec = ErrorCode(Framework::ErrorCode_FORMAT);
+
+	return res;
+}
+
+// returns false on failure, with the failure in ec
+//					  forward final
+bool GetGearRatios(FileDecrypter& decrypter, std::pair<std::vector<float>, float>& gearRatios, ErrorCode& ec)
+{
+	// find gearing information in drivetrain.ini
+	const auto drivetrain = decrypter.DecryptFile("drivetrain.ini", ec);
+
+	// check for errors
+	if (ec != Framework::ErrorCode_SUCCESS)
+		return false;
+
+	// place the string in a stringstream to assist the ini parser
+	std::stringstream iniFile(drivetrain.GetContents());
+
+	inipp::Ini<char> iniParser;
+
+	// parse the ini for GEARS->COUNT, GEARS->GEAR_[1-COUNT], and GEARS->FINAL
+	iniParser.parse(iniFile);
+
+	// only call operator[] once, we will be referencing GEARS a lot
+	auto gears = iniParser.sections["GEARS"];
+
+	int gearCount = -1;
+
+	// get the number of gears
+	if (inipp::extract(gears["COUNT"], gearCount) == false || gearCount < 0)
+	{
+		ec = ErrorCode(Framework::ErrorCode_FORMAT);
+		return false;
+	}
+
+	std::string gearPrefix = "GEAR_";
+	gearRatios.first.resize(gearCount);
+	for (size_t gear = 1; gear <= gearCount; ++gear)
+	{
+		// extract ratios, and add them to the end
+		if (inipp::extract(gears[gearPrefix + std::to_string(gear)], gearRatios.first[gear - 1]) == false)
+		{
+			ec = ErrorCode(Framework::ErrorCode_FORMAT);
+			return false;
+		}
+	}
+
+	// get the final drive ratio
+	if (inipp::extract(gears["FINAL"], gearRatios.second) == false)
+	{
+		ec = ErrorCode(Framework::ErrorCode_FORMAT);
+		return false;
+	}
+
+	return true;
+}
+
+// returns false on failure, with the failure in ec
+bool GetTorqueCurve(FileDecrypter& decrypter, Curve& torqueCurve, ErrorCode& ec)
+{
+	// get power.lut
+	const auto power = decrypter.DecryptFile("power.lut", ec);
+
+	if (ec != Framework::ErrorCode_SUCCESS)
+		return false;
+
+	// put the file in a stringstream to assist the LUT parser
+	std::stringstream powerFile(power.GetContents());
+
+	torqueCurve.ParseLUT(powerFile, ec);
+
+	return true;
+}
+
 int main(int argc, char* argv[])
 {
 	// make sure we don't have too many args
@@ -58,109 +154,43 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// get drivetrain.ini
-	const auto drivetrain = decrypter.DecryptFile("drivetrain.ini", ec);
-
-	if (ec != Framework::ErrorCode_SUCCESS)
-	{
-		std::cout << "Unable to find drivetrain.ini in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
-		return 1;
-	}
-
-	// get engine.ini
-	const auto engine = decrypter.DecryptFile("engine.ini", ec);
-
-	if (ec != Framework::ErrorCode_SUCCESS)
-	{
-		std::cout << "Unable to find engine.ini in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
-		return 1;
-	}
-
 	int redline = -1;
 
-	inipp::Ini<char> engineIni;
-	// put the string in a stream for the ini parser to work properly
-	std::stringstream engineContents(engine.GetContents());
-
-	engineIni.parse(engineContents);
-
-	auto engineData = engineIni.sections["ENGINE_DATA"];
-
-	if (inipp::extract(engineData["LIMITER"], redline) == false || redline < 0)
+	// get redline information
+	if (GetRedline(decrypter, redline, ec) == false || redline < 0)
 	{
-		std::cout << "Failed to parse engine redline\n";
-		return 0;
-	}
-
-	// get power.lut
-	const auto power = decrypter.DecryptFile("power.lut", ec);
-
-	if (ec != Framework::ErrorCode_SUCCESS)
-	{
-		std::cout << "Unable to find power.lut in file: " << ec.GetMessage() << " (" << ec.GetRawCode() << "\n";
+		std::cout << "Failed to get redline information: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
 		return 1;
 	}
 
-	inipp::Ini<char> ini;
-	// put the string in a stream for the ini parser to work properly
-	std::stringstream drivetrainContents(drivetrain.GetContents());
+	std::pair<std::vector<float>, float> gearRatios;
 
-	ini.parse(drivetrainContents);
-
-	// fetch the number of gears
-	int gearCount = -1;
-
-	auto gears = ini.sections["GEARS"];
-	
-	if (inipp::extract(gears["COUNT"], gearCount) == false || gearCount < 0)
+	// get gear ratio information
+	if (GetGearRatios(decrypter, gearRatios, ec) == false || gearRatios.first.size() == 0 || gearRatios.second < 0.f)
 	{
-		std::cout << "Failed to parse number of gears\n";
+		std::cout << "Failed to get gear ratio information: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
 		return 1;
 	}
 
-	// fetch our final drive ratio
-	float finalDrive = -1.f;
+	// get torque curve
 
-	if (inipp::extract(gears["FINAL"], finalDrive) == false || finalDrive < 0.f)
+	Curve torqueCurve;
+	if (GetTorqueCurve(decrypter, torqueCurve, ec) == false || torqueCurve.GetMaxRef() == 0)
 	{
-		std::cout << "Failed to parse final drive ratio\n";
+		std::cout << "Failed to get torque curve: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
 		return 1;
 	}
 
-	// create our vector of ratios
-	std::vector<float> gearRatios(gearCount);
+	const auto redlineTorqueBase = torqueCurve.GetValue(redline);
 
-	// create our prefix for all of the gear ratios
-	std::string gearKey = "GEAR_";
-
-	for (size_t i = 1; i <= gearCount; ++i)
-	{
-		if (inipp::extract(gears[gearKey + std::to_string(i)], gearRatios[i - 1]) == false)
-		{
-			std::cout << "Failed to extract gear ratio " << i << '\n';
-			return 1;
-		}
-
-		std::cout << "Ratio for " << i << ": " << gearRatios[i - 1] << '\n';
-	}
-
-	std::cout << "Gear count: " << gearCount << '\n';
-	std::cout << "Final drive ratio: " << finalDrive << '\n';
-	std::cout << "Redline: " << redline << '\n';
-
-	Curve curve;
-	curve.ParseLUT(power.GetContents());
-
-	const auto redlineTorqueBase = curve.GetValue(redline);
-
-	for (size_t i = 0; i < (gearCount - 1); ++i)
+	for (size_t i = 0; i < (gearRatios.first.size() - 1); ++i)
 	{
 		// figure out if we should go to redline
-		const auto currRatio = gearRatios[i];
-		const auto nextRatio = gearRatios[i + 1];
+		const auto currRatio = gearRatios.first[i];
+		const auto nextRatio = gearRatios.first[i + 1];
 
 		const auto nextGearRPM = redline * (nextRatio / currRatio);
-		const auto nextGearTorqueBase = curve.GetValue(nextGearRPM);
+		const auto nextGearTorqueBase = torqueCurve.GetValue(nextGearRPM);
 
 		const auto redlineTorque = redlineTorqueBase * currRatio;
 		const auto nextGearTorque = nextGearTorqueBase * nextRatio;
