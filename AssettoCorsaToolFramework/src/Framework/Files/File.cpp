@@ -2,7 +2,7 @@
 
 using Framework::Files::File;
 
-File::File(const std::string& name, const std::string& contents)
+File::File(const Data_t& name, const Data_t& contents)
 	: m_name(name), m_contents(contents) {}
 
 File::File(File&& other)
@@ -14,12 +14,12 @@ File::File(File&& other)
 	other.m_contents = "";
 }
 
-std::string File::GetName() const noexcept
+File::Data_t File::GetName() const noexcept
 {
 	return m_name;
 }
 
-std::string File::GetContents() const noexcept
+File::Data_t File::GetContents() const noexcept
 {
 	return m_contents;
 }

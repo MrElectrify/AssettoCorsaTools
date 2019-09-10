@@ -18,16 +18,18 @@ namespace Framework
 		class File
 		{
 		public:
+			using Data_t = std::string;
+
 			// constructor for a file, read-only once created
-			File(const std::string& name, const std::string& contents);
+			File(const Data_t& name, const Data_t& contents);
 			// move
 			File(File&& other);
 
-			std::string GetName() const noexcept;
-			std::string GetContents() const noexcept;
+			Data_t GetName() const noexcept;
+			Data_t GetContents() const noexcept;
 		private:
-			std::string m_name;
-			std::string m_contents;
+			Data_t m_name;
+			Data_t m_contents;
 		};
 
 	}
