@@ -172,9 +172,9 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// get torque curve
-
 	Curve torqueCurve;
+
+	// get torque curve
 	if (GetTorqueCurve(decrypter, torqueCurve, ec) == false || torqueCurve.GetMaxRef() == 0)
 	{
 		std::cout << "Failed to get torque curve: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
@@ -202,8 +202,11 @@ int main(int argc, char* argv[])
 			continue;
 		}
 
-		// we could use this if they were in the same interpolation range, but that is near impossible https://goodaids.club/i/3c1ay529tm.png
-		// so lets take a naive approach and increment by 50rpm, and figure out a range. start at redline and work our way backwards to get the highest place
+		// we could use this if they were in the same interpolation range, 
+		// but that is near impossible https://goodaids.club/i/3c1ay529tm.png
+		// so lets take a naive approach and work backwards from redline, 
+		// finding the first place that the current gear would produce more torque, 
+		// which is the optimal shift point
 		for (int32_t rpm = redline; rpm > 0; --rpm)
 		{
 			// get the current torque, and the torque at the RPM of our next gear
@@ -211,7 +214,8 @@ int main(int argc, char* argv[])
 			nextGearRPM = rpm * (nextRatio / currRatio);
 			const auto nextTorqueBase = torqueCurve.GetValue(static_cast<Curve::Data_t>(nextGearRPM));
 
-			// by finding where current torque exceeds next torque (because we are working backwards), we know where to shift at the highest RPM to get the best results.
+			// by finding where current torque exceeds next torque (because we are working backwards),
+			// we know where to shift at the highest RPM to get the best results.
 			const auto currTorque = currTorqueBase * currRatio;
 			const auto nextTorque = nextTorqueBase * nextRatio;
 
