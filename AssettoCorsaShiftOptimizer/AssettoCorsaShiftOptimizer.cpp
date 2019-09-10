@@ -189,8 +189,8 @@ int main(int argc, char* argv[])
 		const auto currRatio = gearRatios.first[i];
 		const auto nextRatio = gearRatios.first[i + 1];
 
-		const auto nextGearRPM = redline * (nextRatio / currRatio);
-		const auto nextGearTorqueBase = torqueCurve.GetValue(nextGearRPM);
+		auto nextGearRPM = redline * (nextRatio / currRatio);
+		const auto nextGearTorqueBase = torqueCurve.GetValue(static_cast<Curve::Data_t>(nextGearRPM));
 
 		const auto redlineTorque = redlineTorqueBase * currRatio;
 		const auto nextGearTorque = nextGearTorqueBase * nextRatio;
@@ -200,6 +200,26 @@ int main(int argc, char* argv[])
 			// we should go to redline, torque is greater
 			std::cout << "Go to redline for gear " << i + 1 << '\n';
 			continue;
+		}
+
+		// we could use this if they were in the same interpolation range, but that is near impossible https://goodaids.club/i/3c1ay529tm.png
+		// so lets take a naive approach and increment by 50rpm, and figure out a range
+		for (int32_t rpm = 0; rpm < redline; ++rpm)
+		{
+			// get the current torque, and the torque at the RPM of our next gear
+			const auto currTorqueBase = torqueCurve.GetValue(rpm);
+			nextGearRPM = rpm * (nextRatio / currRatio);
+			const auto nextTorqueBase = torqueCurve.GetValue(static_cast<Curve::Data_t>(nextGearRPM));
+
+			// if next torque is greater than current torque, we found the range
+			const auto currTorque = currTorqueBase * currRatio;
+			const auto nextTorque = nextTorqueBase * nextRatio;
+
+			if (nextTorque > currTorque)
+			{
+				std::cout << "Shift at around " << rpm << " rpm from gear " << i + 1 << " to gear " << i + 2 << '\n';
+				break;
+			}
 		}
 	}
 
