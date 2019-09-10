@@ -25,6 +25,9 @@ namespace Framework
 		class FileDecrypter
 		{
 		public:
+			using File_t = std::ifstream;
+			using Key_t = std::string;
+
 			// default constructor, throws ErrorCode on error. assumes directory only includes the name of the directory, and no other part of the path
 			FileDecrypter(const std::string& fileName, const std::string& directory);
 			// overload that does not throw, stores ErrorCode in ec on error. assumes directory only includes the name of the directory, and no other part of the path
@@ -51,8 +54,8 @@ namespace Framework
 			// calculate the decryption key
 			void CalculateKey(const std::string& directory);
 
-			std::ifstream m_file;
-			std::string m_key;
+			File_t m_file;
+			Key_t m_key;
 		};
 	}
 }
