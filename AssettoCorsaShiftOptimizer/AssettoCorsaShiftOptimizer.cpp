@@ -26,7 +26,7 @@ std::string GetWorkingDirectory()
 	folderName = std::filesystem::current_path().string();
 
 	// make sure no slashes are in the folder name
-	auto lastSlash = folderName.find_last_of("/\\", 0, 2);
+	auto lastSlash = folderName.find_last_of("/\\", std::string::npos, 2);
 
 	if (lastSlash != std::string::npos)
 	{
@@ -143,6 +143,8 @@ int main(int argc, char* argv[])
 
 	std::string dataFile = (argc >= 2) ? argv[1] : "data.acd";
 	std::string directory = (argc >= 3) ? argv[2] : GetWorkingDirectory();
+
+	std::cout << "Dir: " << directory << '\n';
 
 	ErrorCode ec;
 	FileDecrypter decrypter(dataFile, directory, ec);
