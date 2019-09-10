@@ -24,6 +24,10 @@ void Curve::ParseLUT(std::istream& lutFile)
 		const auto reference = atoi(workingString.substr(0, splitPos).c_str());
 		const auto value = atoi(workingString.substr(splitPos + 1).c_str());
 
+		// make sure we are not using erroneous values
+		if (reference < 0 || value < 0)
+			continue;
+
 		m_values.emplace(reference, value);
 	}
 }

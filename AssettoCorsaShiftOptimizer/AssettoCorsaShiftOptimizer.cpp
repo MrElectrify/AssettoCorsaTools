@@ -203,19 +203,19 @@ int main(int argc, char* argv[])
 		}
 
 		// we could use this if they were in the same interpolation range, but that is near impossible https://goodaids.club/i/3c1ay529tm.png
-		// so lets take a naive approach and increment by 50rpm, and figure out a range
-		for (int32_t rpm = 0; rpm < redline; ++rpm)
+		// so lets take a naive approach and increment by 50rpm, and figure out a range. start at redline and work our way backwards to get the highest place
+		for (int32_t rpm = redline; rpm > 0; --rpm)
 		{
 			// get the current torque, and the torque at the RPM of our next gear
 			const auto currTorqueBase = torqueCurve.GetValue(rpm);
 			nextGearRPM = rpm * (nextRatio / currRatio);
 			const auto nextTorqueBase = torqueCurve.GetValue(static_cast<Curve::Data_t>(nextGearRPM));
 
-			// if next torque is greater than current torque, we found the range
+			// by finding where current torque exceeds next torque (because we are working backwards), we know where to shift at the highest RPM to get the best results.
 			const auto currTorque = currTorqueBase * currRatio;
 			const auto nextTorque = nextTorqueBase * nextRatio;
 
-			if (nextTorque > currTorque)
+			if (currTorque > nextTorque)
 			{
 				std::cout << "Shift at around " << rpm << " rpm from gear " << i + 1 << " to gear " << i + 2 << '\n';
 				break;
