@@ -63,7 +63,7 @@ bool GetRedline(FileDecrypter& decrypter, int& redline, ErrorCode& ec)
 }
 
 // returns false on failure, with the failure in ec
-//					  forward final
+//																   forward final
 bool GetGearRatios(FileDecrypter& decrypter, std::pair<std::vector<float>, float>& gearRatios, ErrorCode& ec)
 {
 	// find gearing information in drivetrain.ini
