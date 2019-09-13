@@ -69,7 +69,9 @@ The purpose of File is to wrap a file's name and contents together, immutable
 ## Framwork::Files::FileManager
 #### Enum MODE:
 `MODE_READ` - The manager is in read mode and reads from a file to populate the internal file buffer, and does not support outputting
+
 `MODE_WRITE` - The manager is in write mode, and does not support reading, and can output to a buffer
+
 `MODE_READWRITE` - The manager is able to both read and write files
 #### Location:
 `Framework/Files/FileManager.h`
@@ -77,7 +79,9 @@ The purpose of File is to wrap a file's name and contents together, immutable
 The purpose of FileManager is to decrypt and decrypt `.acd` files found in Assetto Corsa.
 #### DataTypes:
 `File_t` = `std::ifstream`
+
 `Key_t` = `std::string`
+
 `Mode_t` = `MODE`
 #### Member Functions:
 `FileManager(const std::string& fileName, const std::string& directory, Mode_t mode)` - Default constructor, throws ErrorCode on error. Assumes directory only includes the name of the directory, and no other part of the path
