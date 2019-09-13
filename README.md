@@ -1,3 +1,5 @@
+# AssettoCorsaTools
+AssettoCorsaTools is a set of tools for use in modification of AssettoCorsa as well as an example providing a practical non-modding use-case of the library.
 # AssettoCorsaCarDataDumper
 Usage: `AssettoCorsaCarDataDumper [dataFile:string:data.acd] [directory:string:wd] [outDirectory:string:dataFileMinusExt] [fileName:string[OPT]]`
 
@@ -23,7 +25,7 @@ The purpose of Curve is to allow for a simple wrapper for a container which inte
 #### Member functions:
 `void ParseLUT(std::istream& lutFile)` - Parses the LUT file via a stream. throws ErrorCode on error
 
-`void ParseLUT(std::istream& lutFile, Framework::ErrorCode& ec)` - Parses the LUT file via a stream. returns ErrorCode in ec on error
+`void ParseLUT(std::istream& lutFile, Framework::ErrorCode& ec)` - Parses the LUT file via a stream. Returns ErrorCode in ec on error
 
 `Data_t GetMinRef() const` - Returns the smallest reference value
 
@@ -64,29 +66,26 @@ The purpose of File is to wrap a file's name and contents together, immutable
 `Data_t GetName() const noexcept` - Returns the name of the file
 
 `Data_t GetContents() const noexcept` - Returns the contents of the file
-## Framwork::Files::FileDecrypter
+## Framwork::Files::FileManager
+#### Enum MODE:
+`MODE_READ` - The manager is in read mode and reads from a file to populate the internal file buffer, and does not support outputting
+`MODE_WRITE` - The manager is in write mode, and does not support reading, and can output to a buffer
+`MODE_READWRITE` - The manager is able to both read and write files
 #### Location:
-`Framework/Files/FileDecrypter.h`
+`Framework/Files/FileManager.h`
 #### Purpose:
-The purpose of FileDecrypter is to decrypt the encrypted `.acd` files found in Assetto Corsa.
+The purpose of FileManager is to decrypt and decrypt `.acd` files found in Assetto Corsa.
 #### DataTypes:
 `File_t` = `std::ifstream`
 `Key_t` = `std::string`
+`Mode_t` = `MODE`
 #### Member Functions:
-`FileDecrypter(const std::string& fileName, const std::string& directory)` - Constructs a decrypter on a certain file, which cannot be changed after initialization. Throws ErrorCode on error
+`FileManager(const std::string& fileName, const std::string& directory, Mode_t mode)` - Default constructor, throws ErrorCode on error. Assumes directory only includes the name of the directory, and no other part of the path
 
-`FileDecrypter(const std::string& fileName, const std::string& directory, Framework::ErorrCode& ec)` - Constructs a decrypter on a certain file, which cannot be changed after initialization. Returns ErrorCode in ec on error
+`FileManager(const std::string& fileName, const std::string& directory, Mode_t mode Framework::ErorrCode& ec)` - Overload that does not throw, stores ErrorCode in ec on error. Assumes directory only includes the name of the directory, and no other part of the path
 
-`File DecryptNext()` - Decrypts the next file in the filesystem and returns it. Throws ErrorCode on error
+`File GetFile(const std::string& fileName)` - Gets a single file by name. Throws ErrorCode on error
 
-`File DecryptNext()`- Decrypts the next file in the filesystem and returns it. Returns ErrorCode in ec on error
+`File GetFile(const std::string& fileName, ErrorCode& ec)` - Gets a single file by name. Stores ErrorCode in ec on error
 
-`std::vector<File> DecryptAll()` - Decrypts the entire filesystem and returns it as a vector of Files. Throws ErrorCode on error
-
-`std::vector<File> DecryptAll(Framework::ErrorCode& ec)` - Decrypts the entire filesystem and returns it as a vector of Files. Returns ErrorCode in ec on error
-
-`File DecryptFile(const std::string& fileName)` - Decrypts a file by name and returns it. Throws ErrorCode on error
-
-`File DecryptFile(const std::string& fileName, Framework::ErrorCode& ec)` - Decrypts a file by name and returns it. Returns ErrorCode in ec on error
-
-`~FileDecrypter()` - Cleans up and closes handles
+`Vec_t GetFiles()` - Gets all files`

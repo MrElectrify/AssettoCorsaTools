@@ -30,28 +30,28 @@
     <ClInclude Include="include\Framework\Error.h">
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="include\Framework\Files\FileDecrypter.h">
-      <Filter>Header Files\Framework\Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Framework\Files\File.h">
       <Filter>Header Files\Framework\Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Framework\Curve.h">
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
+    <ClInclude Include="include\Framework\Files\FileManager.h">
+      <Filter>Header Files\Framework\Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Framework\Error.cpp">
       <Filter>Source Files\Framework</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Framework\Files\FileDecrypter.cpp">
-      <Filter>Source Files\Framework\Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Framework\Files\File.cpp">
       <Filter>Source Files\Framework\Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Framework\Curve.cpp">
       <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Framework\Files\FileManager.cpp">
+      <Filter>Source Files\Framework\Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

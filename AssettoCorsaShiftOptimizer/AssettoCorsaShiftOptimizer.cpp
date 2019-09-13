@@ -1,5 +1,5 @@
 #include <Framework/Curve.h>
-#include <Framework/Files/FileDecrypter.h>
+#include <Framework/Files/FileManager.h>
 
 #include "inipp.h"
 
@@ -16,7 +16,7 @@
 using Framework::Curve;
 using Framework::ErrorCode;
 using Framework::Files::File;
-using Framework::Files::FileDecrypter;
+using Framework::Files::FileManager;
 
 std::string GetWorkingDirectory()
 {
@@ -37,10 +37,10 @@ std::string GetWorkingDirectory()
 }
 
 // returns false on failure, with the failure in ec
-bool GetRedline(FileDecrypter& decrypter, int& redline, ErrorCode& ec)
+bool GetRedline(FileManager& manager, int& redline, ErrorCode& ec)
 {
 	// find redline in engine.ini
-	const auto engine = decrypter.DecryptFile("engine.ini", ec);
+	const auto engine = manager.GetFile("engine.ini", ec);
 
 	// check for errors
 	if (ec != Framework::ErrorCode_SUCCESS)
@@ -64,10 +64,10 @@ bool GetRedline(FileDecrypter& decrypter, int& redline, ErrorCode& ec)
 
 // returns false on failure, with the failure in ec
 //																   forward final
-bool GetGearRatios(FileDecrypter& decrypter, std::pair<std::vector<float>, float>& gearRatios, ErrorCode& ec)
+bool GetGearRatios(FileManager& manager, std::pair<std::vector<float>, float>& gearRatios, ErrorCode& ec)
 {
 	// find gearing information in drivetrain.ini
-	const auto drivetrain = decrypter.DecryptFile("drivetrain.ini", ec);
+	const auto drivetrain = manager.GetFile("drivetrain.ini", ec);
 
 	// check for errors
 	if (ec != Framework::ErrorCode_SUCCESS)
@@ -116,10 +116,10 @@ bool GetGearRatios(FileDecrypter& decrypter, std::pair<std::vector<float>, float
 }
 
 // returns false on failure, with the failure in ec
-bool GetTorqueCurve(FileDecrypter& decrypter, Curve& torqueCurve, ErrorCode& ec)
+bool GetTorqueCurve(FileManager& manager, Curve& torqueCurve, ErrorCode& ec)
 {
 	// get power.lut
-	const auto power = decrypter.DecryptFile("power.lut", ec);
+	const auto power = manager.GetFile("power.lut", ec);
 
 	if (ec != Framework::ErrorCode_SUCCESS)
 		return false;
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
 	std::string directory = (argc >= 3) ? argv[2] : GetWorkingDirectory();
 
 	ErrorCode ec;
-	FileDecrypter decrypter(dataFile, directory, ec);
+	FileManager manager(dataFile, directory, FileManager::MODE_READ, ec);
 
 	// make sure we initialized the decrypter properly
 	if (ec != Framework::ErrorCode_SUCCESS)
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
 	int redline = -1;
 
 	// get redline information
-	if (GetRedline(decrypter, redline, ec) == false || redline < 0)
+	if (GetRedline(manager, redline, ec) == false || redline < 0)
 	{
 		std::cout << "Failed to get redline information: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
 		return 1;
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
 	std::pair<std::vector<float>, float> gearRatios;
 
 	// get gear ratio information
-	if (GetGearRatios(decrypter, gearRatios, ec) == false || gearRatios.first.size() == 0 || gearRatios.second < 0.f)
+	if (GetGearRatios(manager, gearRatios, ec) == false || gearRatios.first.size() == 0 || gearRatios.second < 0.f)
 	{
 		std::cout << "Failed to get gear ratio information: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
 		return 1;
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
 	Curve torqueCurve;
 
 	// get torque curve
-	if (GetTorqueCurve(decrypter, torqueCurve, ec) == false || torqueCurve.GetMaxRef() == 0)
+	if (GetTorqueCurve(manager, torqueCurve, ec) == false || torqueCurve.GetMaxRef() == 0)
 	{
 		std::cout << "Failed to get torque curve: " << ec.GetMessage() << " (" << ec.GetRawCode() << ")\n";
 		return 1;

@@ -22,8 +22,6 @@ namespace Framework
 
 			// constructor for a file, read-only once created
 			File(const Data_t& name, const Data_t& contents);
-			// move
-			File(File&& other);
 
 			Data_t GetName() const noexcept;
 			Data_t GetContents() const noexcept;

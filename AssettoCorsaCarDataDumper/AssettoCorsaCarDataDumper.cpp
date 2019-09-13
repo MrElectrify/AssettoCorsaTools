@@ -3,14 +3,15 @@
  *	9/8/19 20:50
  */
 
-#include <Framework/Files/FileDecrypter.h>
+#include <Framework/Files/FileManager.h>
 
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 
 using Framework::ErrorCode;
 using Framework::Files::File;
-using Framework::Files::FileDecrypter;
+using Framework::Files::FileManager;
 
 std::string GetWorkingDirectory()
 {
@@ -59,7 +60,7 @@ int main(int argc, char* argv[])
 	outPath += '/';
 
 	ErrorCode ec;
-	FileDecrypter decrypter(dataFile, directory, ec);
+	FileManager manager(dataFile, directory, FileManager::MODE_READ, ec);
 
 	if (ec != Framework::ErrorCode_SUCCESS)
 	{
@@ -82,7 +83,7 @@ int main(int argc, char* argv[])
 	if (argc < 4)
 	{
 		// user did not specify a specific file to decrypt, decrypting and saving all to path
-		auto files = decrypter.DecryptAll(ec);
+		auto files = manager.GetFiles();
 
 		if (ec != Framework::ErrorCode_SUCCESS)
 		{
@@ -110,7 +111,7 @@ int main(int argc, char* argv[])
 
 		std::string fileName = argv[4];
 		
-		const auto file = decrypter.DecryptFile(fileName, ec);
+		const auto file = manager.GetFile(fileName, ec);
 
 		// can we find the file?
 		if (ec != Framework::ErrorCode_SUCCESS)
