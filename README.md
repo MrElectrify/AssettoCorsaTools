@@ -66,7 +66,7 @@ The purpose of File is to wrap a file's name and contents together, immutable
 `Data_t GetName() const noexcept` - Returns the name of the file
 
 `Data_t GetContents() const noexcept` - Returns the contents of the file
-## Framwork::Files::FileManager
+## Framework::Files::FileManager
 #### Enum MODE:
 `MODE_READ` - The manager is in read mode and reads from a file to populate the internal file buffer, and does not support outputting
 
