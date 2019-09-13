@@ -86,10 +86,10 @@ The purpose of FileManager is to decrypt and decrypt `.acd` files found in Asset
 #### Member Functions:
 `FileManager(const std::string& fileName, const std::string& directory, Mode_t mode)` - Default constructor, throws ErrorCode on error. Assumes directory only includes the name of the directory, and no other part of the path
 
-`FileManager(const std::string& fileName, const std::string& directory, Mode_t mode Framework::ErorrCode& ec)` - Overload that does not throw, stores ErrorCode in ec on error. Assumes directory only includes the name of the directory, and no other part of the path
+`FileManager(const std::string& fileName, const std::string& directory, Mode_t mode Framework::ErorrCode& ec) noexcept` - Overload that does not throw, stores ErrorCode in ec on error. Assumes directory only includes the name of the directory, and no other part of the path
 
-`File GetFile(const std::string& fileName)` - Gets a single file by name. Throws ErrorCode on error
+`File GetFile(const std::string& fileName) const` - Gets a single file by name. Throws ErrorCode on error
 
-`File GetFile(const std::string& fileName, ErrorCode& ec)` - Gets a single file by name. Stores ErrorCode in ec on error
+`File GetFile(const std::string& fileName, ErrorCode& ec) const noexcept` - Gets a single file by name. Stores ErrorCode in ec on error
 
-`Vec_t GetFiles()` - Gets all files`
+`Vec_t GetFiles() const noexcept` - Gets all files`
